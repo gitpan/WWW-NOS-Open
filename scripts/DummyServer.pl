@@ -2,10 +2,10 @@
 use strict;
 use warnings;
 
-# $Id: DummyServer.pl 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: DummyServer.pl 407 2011-01-06 01:06:07Z roland $
+# $Revision: 407 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/scripts/DummyServer.pl $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-06 02:06:07 +0100 (Thu, 06 Jan 2011) $
 
 use utf8;
 use 5.006000;
@@ -265,7 +265,7 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
         }},
         xml => q{<?xml version="1.0" encoding="UTF-8"?>
 <list type="latest_audio" itemcount="2">
-    <video>
+    <audio>
         <id>175384</id>
         <type><![CDATA[audio]]></type>
         <title><![CDATA[Paul Sneijder over Belgische formatie]]></title>
@@ -282,8 +282,8 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
             <keyword><![CDATA[brussel]]></keyword>
             <keyword><![CDATA[formatie]]></keyword>
         </keywords>
-    </video>
-    <video>
+    </audio>
+    <audio>
         <id>175383</id>
         <type><![CDATA[audio]]></type>
         <title><![CDATA[Griekse chauffeurs blijven staken]]></title>
@@ -303,7 +303,7 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
             <keyword><![CDATA[Athene]]></keyword>
             <keyword><![CDATA[brandstoftekort]]></keyword>
         </keywords>
-    </video>
+    </audio>
 </list>},
     },
     search => {

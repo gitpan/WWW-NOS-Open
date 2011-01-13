@@ -2,18 +2,18 @@ package WWW::NOS::Open::Article;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Article.pm 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: Article.pm 414 2011-01-13 22:43:18Z roland $
+# $Revision: 414 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/Article.pm $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-13 23:43:18 +0100 (Thu, 13 Jan 2011) $
 
 use utf8;
 use 5.006000;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Moose qw/extends/;
-use namespace::autoclean -except => 'meta', -also => qr/^__/sxm;
+use namespace::autoclean -also => qr/^__/sxm;
 
 extends 'WWW::NOS::Open::Resource';
 
@@ -29,7 +29,7 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS DateTime URI
+=for stopwords Roland van Ipenburg API NOS DateTime URI URL
 
 =head1 NAME
 
@@ -38,7 +38,7 @@ L<Open NOS|http://open.nos.nl/> REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::Article version 0.01.
+This document describes WWW::NOS::Open::Article version 0.02.
 
 =head1 SYNOPSIS
 

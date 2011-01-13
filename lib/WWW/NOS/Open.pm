@@ -2,17 +2,17 @@ package WWW::NOS::Open;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Open.pm 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: Open.pm 414 2011-01-13 22:43:18Z roland $
+# $Revision: 414 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open.pm $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-13 23:43:18 +0100 (Thu, 13 Jan 2011) $
 
 use utf8;
 use 5.006000;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-use Date::Calc qw(Add_Delta_Days Date_to_Days Today);
+use Date::Calc qw(Add_Delta_Days Date_to_Days Delta_Days Today);
 use Date::Format;
 use HTTP::Headers;
 use HTTP::Request;
@@ -26,7 +26,8 @@ use Moose::Util::TypeConstraints qw/enum/;
 use URI::Escape qw(uri_escape);
 use URI;
 use XML::Simple;
-use namespace::autoclean -except => 'meta', -also => qr/^__/sxm;
+
+use namespace::autoclean -also => qr/^__/sxm;
 
 use WWW::NOS::Open::Article;
 use WWW::NOS::Open::AudioFragment;
@@ -51,6 +52,10 @@ Readonly::Scalar my $GET           => q{GET};
 Readonly::Scalar my $DEFAULT_API_KEY  => q{TEST};
 Readonly::Scalar my $DEFAULT_OUTPUT   => q{xml};
 Readonly::Scalar my $DEFAULT_CATEGORY => q{nieuws};
+Readonly::Scalar my $DASH             => q{-};
+Readonly::Scalar my $DOUBLE_COLON     => q{::};
+Readonly::Scalar my $FRAGMENT         => q{Fragment};
+Readonly::Scalar my $VERSION_PATH => q{%s/v1/index/version/key/%s/output/%s/};
 Readonly::Scalar my $LATEST_PATH =>
   q{%s/v1/latest/%s/key/%s/output/%s/category/%s/};
 Readonly::Scalar my $SEARCH_PATH => q{%s/v1/search/query/key/%s/output/%s/q/%s};
@@ -58,11 +63,11 @@ Readonly::Scalar my $GUIDE_PATH =>
   q{%s/v1/guide/%s/key/%s/output/%s/start/%s/end/%s/};
 Readonly::Scalar my $XML_DETECT    => qr{^<}smx;
 Readonly::Scalar my $STRIP_PRIVATE => qr{^_}smx;
-Readonly::Scalar my $MULTIMEDIA    => qr{ ^(audio|video)$ }smx;
 
 Readonly::Hash my %ERR => (
     INTERNAL_SERVER => q{Internal server error or no response recieved},
     UNPARSABLE      => q{Could not parse data},
+    EXCEEDED_RANGE  => qq{Date range exceeds maximum of $MAX_RANGE days},
 );
 Readonly::Hash my %LOG => (
     REQUESTING    => q{Requesting %s},
@@ -91,7 +96,7 @@ has '_version' => (
 
 sub get_version {
     my $self = shift;
-    my $url = sprintf q{%s/v1/index/version/key/%s/output/%s/}, $SERVER,
+    my $url = sprintf $VERSION_PATH, $SERVER,
       URI::Escape::uri_escape( $self->get_api_key ),
       URI::Escape::uri_escape( $self->_get_default_output );
     my $response = $self->_do_request($url);
@@ -100,10 +105,10 @@ sub get_version {
 }
 
 sub _parse_version {
-    my ( $self, $data ) = @_;
+    my ( $self, $body ) = @_;
     my ( $version, $build );
-    if ( $data =~ /$XML_DETECT/gsmx ) {
-        my $xml = XML::Simple->new( ForceArray => 1 )->XMLin($data);
+    if ( $body =~ /$XML_DETECT/gsmx ) {
+        my $xml = XML::Simple->new( ForceArray => 1 )->XMLin($body);
         $version = $xml->{item}[0]->{version}[0];
         $build   = $xml->{item}[0]->{build}[0];
     }
@@ -161,12 +166,16 @@ sub __get_props {
 
 sub _parse_resource {
     my ( $self, $type, $hr_resource ) = @_;
+    my %mapping = (
+        article   => __PACKAGE__ . $DOUBLE_COLON . ucfirst $type,
+        video     => __PACKAGE__ . $DOUBLE_COLON . ucfirst $type,
+        audio     => __PACKAGE__ . $DOUBLE_COLON . ucfirst $type . $FRAGMENT,
+        document  => __PACKAGE__ . $DOUBLE_COLON . ucfirst $type,
+        broadcast => __PACKAGE__ . $DOUBLE_COLON . ucfirst $type,
+    );
 
-    my @props = __get_props( WWW::NOS::Open::Article->meta );
-    if ( $type =~ /$MULTIMEDIA/smx ) {
-        push @props, q{embedcode};
-    }
-    my %param = ();
+    my @props = __get_props( ( $mapping{$type} )->meta );
+    my %param;
     while ( my $prop = shift @props ) {
         $param{$prop} =
           ( ref $hr_resource->{$prop}[0] eq q{HASH} )
@@ -174,33 +183,19 @@ sub _parse_resource {
           : $hr_resource->{$prop}[0];
     }
     $param{keywords} = $hr_resource->{keywords}->[0]->{keyword} || [];
-    if ( $type eq q{article}
-        && ( my $resource = WWW::NOS::Open::Article->new(%param) ) )
-    {
-        return $resource;
-    }
-    if ( $type eq q{video}
-        && ( my $resource = WWW::NOS::Open::Video->new(%param) ) )
-    {
-        return $resource;
-    }
-    if ( $type eq q{audio}
-        && ( my $resource = WWW::NOS::Open::AudioFragment->new(%param) ) )
-    {
+    if ( my $resource = ( $mapping{$type} )->new(%param) ) {
         return $resource;
     }
     return;
 }
 
 sub _parse_resources {
-    my ( $self, $type, $data ) = @_;
-    my @resources = ();
+    my ( $self, $type, $body ) = @_;
+    my @resources;
 
-    # Audio fragments are contained in a video element:
-    my $container_type = ( $type =~ m{$MULTIMEDIA}gsmx ) ? q{video} : $type;
-    if ( $data =~ /$XML_DETECT/gsmx ) {
-        my $xml = XML::Simple->new( ForceArray => 1 )->XMLin($data);
-        my @xml_resources = @{ $xml->{$container_type} };
+    if ( $body =~ /$XML_DETECT/gsmx ) {
+        my $xml = XML::Simple->new( ForceArray => 1 )->XMLin($body);
+        my @xml_resources = @{ $xml->{$type} };
         while ( my $resource = shift @xml_resources ) {
             push @resources, $self->_parse_resource( $type, $resource );
         }
@@ -222,33 +217,15 @@ sub get_latest_audio_fragments {
     return $self->_get_latest_resources( q{audio}, @param );
 }
 
-sub _parse_document {
-    my ( $self, $hr_document ) = @_;
-
-    my @props = __get_props( WWW::NOS::Open::Document->meta );
-    my %param = ();
-    while ( my $prop = shift @props ) {
-        $param{$prop} =
-          ( ref $hr_document->{$prop}[0] eq q{HASH} )
-          ? %{ $hr_document->{$prop}[0] }
-          : $hr_document->{$prop}[0];
-    }
-    $param{keywords} = $hr_document->{keywords}->[0]->{keyword};
-    if ( my $document = WWW::NOS::Open::Document->new(%param) ) {
-        return $document;
-    }
-    return;
-}
-
 sub _parse_result {
-    my ( $self, $data ) = @_;
-    my @documents = ();
-    my @related   = ();
-    if ( $data =~ /$XML_DETECT/gsmx ) {
-        my $xml = XML::Simple->new( ForceArray => 1 )->XMLin($data);
+    my ( $self, $body ) = @_;
+    my @documents;
+    if ( $body =~ /$XML_DETECT/gsmx ) {
+        my $xml = XML::Simple->new( ForceArray => 1 )->XMLin($body);
         my @xml_documents = @{ $xml->{documents}->[0]->{document} };
         while ( my $hr_document = shift @xml_documents ) {
-            push @documents, $self->_parse_document($hr_document);
+            push @documents,
+              $self->_parse_resource( q{document}, $hr_document );
         }
         my $result = WWW::NOS::Open::Result->new(
             documents => [@documents],
@@ -275,34 +252,25 @@ sub search {
 }
 
 sub __get_date {
-    my $day = shift;
-    return sprintf
-      $DATE_FORMAT,
-      Add_Delta_Days( 1, 1, 1, ( Date_to_Days(Today) + $day ) - 1 );
-}
-
-sub _parse_broadcast {
-    my ( $self, $hr_broadcast ) = @_;
-
-    my @props = __get_props( WWW::NOS::Open::Broadcast->meta );
-    my %param = ();
-    while ( my $prop = shift @props ) {
-        $param{$prop} =
-          ( ref $hr_broadcast->{$prop}[0] eq q{HASH} )
-          ? %{ $hr_broadcast->{$prop}[0] }
-          : $hr_broadcast->{$prop}[0];
-    }
-    if ( my $broadcast = WWW::NOS::Open::Broadcast->new(%param) ) {
-        return $broadcast;
-    }
-    return;
+    my ( $start_day, $end_day ) = @_;
+    my $today = Date_to_Days(Today);
+    return (
+        (
+            sprintf $DATE_FORMAT,
+            Add_Delta_Days( 1, 1, 1, $today + $start_day - 1 )
+        ),
+        (
+            sprintf $DATE_FORMAT,
+            Add_Delta_Days( 1, 1, 1, $today + $end_day - 1 )
+        )
+    );
 }
 
 sub _parse_dayguide {
     my ( $self, $hr_dayguide ) = @_;
 
     my @props = __get_props( WWW::NOS::Open::DayGuide->meta );
-    my %param = ();
+    my %param;
     while ( my $prop = shift @props ) {
         $param{$prop} =
           ( ref $hr_dayguide->{$prop} eq q{ARRAY} )
@@ -317,7 +285,7 @@ sub _parse_dayguide {
     my @broadcasts = $hr_dayguide->{item};
     while ( my $ar_broadcast = shift @broadcasts ) {
         push @{ $param{broadcasts} },
-          $self->_parse_broadcast( $ar_broadcast->[0] );
+          $self->_parse_resource( q{broadcast}, $ar_broadcast->[0] );
     }
     if ( my $dayguide = WWW::NOS::Open::DayGuide->new(%param) ) {
         return $dayguide;
@@ -326,10 +294,10 @@ sub _parse_dayguide {
 }
 
 sub _parse_guide {
-    my ( $self, $data ) = @_;
-    my @dayguides = ();
-    if ( $data =~ /$XML_DETECT/gsmx ) {
-        my $xml = XML::Simple->new( ForceArray => 1 )->XMLin($data);
+    my ( $self, $body ) = @_;
+    my @dayguides;
+    if ( $body =~ /$XML_DETECT/gsmx ) {
+        my $xml = XML::Simple->new( ForceArray => 1 )->XMLin($body);
         my @xml_dayguides = @{ $xml->{dayguide} };
         while ( my $hr_dayguide = shift @xml_dayguides ) {
             push @dayguides, $self->_parse_dayguide($hr_dayguide);
@@ -345,9 +313,21 @@ sub _parse_guide {
 sub _get_broadcasts {
     my ( $self, $type, $start, $end, $channel ) = @_;
 
-    # TODO: avoid race condition on rollover at 24:00:
-    ( defined $start ) || ( $start = __get_date($DEFAULT_START) );
-    ( defined $end )   || ( $end   = __get_date($DEFAULT_END) );
+    my ( $default_start, $default_end ) =
+      __get_date( $DEFAULT_START, $DEFAULT_END );
+    ( defined $start ) || ( $start = $default_start );
+    ( defined $end )   || ( $end   = $default_end );
+
+    foreach ( $start, $end ) {
+        ( ref $_ eq q{DateTime} ) && ( $_ = $_->ymd );
+    }
+    if ( Delta_Days( split /$DASH/smx, qq{$start$DASH$end} ) > $MAX_RANGE ) {
+        ## no critic qw(RequireExplicitInclusion)
+        NOSOpenExceededRangeException->throw(
+            ## use critic
+            error => $ERR{EXCEEDED_RANGE}
+        );
+    }
     my $url = sprintf $GUIDE_PATH,
       $SERVER,
       URI::Escape::uri_escape($type),
@@ -439,7 +419,7 @@ __END__
 =encoding utf8
 
 =for stopwords Roland van Ipenburg API NOS Readonly PHP JSON URI 
-searchengine useragent
+searchengine useragent DateTime XML
 
 =head1 NAME
 
@@ -448,7 +428,7 @@ L<Open NOS|http://open.nos.nl/> REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open version 0.01
+This document describes WWW::NOS::Open version 0.02.
 
 =head1 SYNOPSIS
 
@@ -532,13 +512,17 @@ C<cricket AND engeland>, C<cricket OR curling>.
 
 Gets a collection of television broadcasts between two optional dates. Returns
 an array of L<WWW::NOS::Open::DayGuide|WWW::NOS::Open::DayGuide> objects. The
-period defaults to starting yesterday and ending tomorrow.
+period defaults to starting yesterday and ending tomorrow. The period has an
+upper limit of 14 days. An C<NOSOpenExceededRangeException> is thrown when
+this limit is exceeded.
 
 =over
 
-=item 1. Start date in the format C<YYYY-MM-DD>
+=item 1. Start date in the format C<YYYY-MM-DD> or as L<DateTime|DateTime>
+object.
 
-=item 2. End date in the format C<YYYY-MM-DD>
+=item 2. End date in the format C<YYYY-MM-DD> or as L<DateTime|DateTime>
+object.
 
 =back
 
@@ -547,13 +531,16 @@ period defaults to starting yesterday and ending tomorrow.
 Gets a collection of radio broadcasts between two optional dates. Returns an
 array of L<WWW::NOS::Open::DayGuide|WWW::NOS::Open::DayGuide> objects. The
 period defaults to starting yesterday and ending tomorrow. The period has an
-upper limit of 14 days.
+upper limit of 14 days. An C<NOSOpenExceededRangeException> is thrown when this
+limit is exceeded.
 
 =over
 
-=item 1. Start date in the format C<YYYY-MM-DD>
+=item 1. Start date in the format C<YYYY-MM-DD> or as L<DateTime|DateTime>
+object.
 
-=item 2. End date in the format C<YYYY-MM-DD>
+=item 2. End date in the format C<YYYY-MM-DD> or as L<DateTime|DateTime>
+object.
 
 =back
 
@@ -602,8 +589,10 @@ This module uses Log::Log4perl.
 
 =head1 BUGS AND LIMITATIONS
 
-Currently the interface only uses the XML output of the service, which might
-not give the best performance.
+Currently this module only uses the XML output of the Open NOS service and has
+no option to use the JSON or serialized PHP formats. When the API matures the
+other output options might be added and the content of the raw responses
+exposed for further processing in an appropriate environment.
 
 Please report any bugs or feature requests at
 L<RT for rt.cpan.org|https://rt.cpan.org/Dist/Display.html?Queue=WWW-NOS-Open>.

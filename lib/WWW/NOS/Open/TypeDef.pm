@@ -2,15 +2,15 @@ package WWW::NOS::Open::TypeDef;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: TypeDef.pm 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: TypeDef.pm 410 2011-01-13 20:39:07Z roland $
+# $Revision: 410 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/TypeDef.pm $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-13 21:39:07 +0100 (Thu, 13 Jan 2011) $
 
 use utf8;
 use 5.006000;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use DateTime;
 use Date::Parse;
@@ -19,7 +19,7 @@ use Moose::Util::TypeConstraints qw/as coerce from where subtype via/;
 use MooseX::Types -declare => [qw(NOSURI NOSDateTime)];
 use MooseX::Types::Moose qw/Str/;
 use URI;
-use namespace::autoclean -except => 'meta', -also => qr/^__/sxm;
+use namespace::autoclean -also => qr/^__/sxm;
 
 ## no critic qw(ProhibitCallsToUndeclaredSubs)
 class_type NOSURI, { class => 'URI' };
@@ -46,12 +46,12 @@ __END__
 
 =head1 NAME
 
-WWW::NOS::Open::TypeDef - Base class for the Perl framework for Open NOS
-REST API property type definitions.
+WWW::NOS::Open::TypeDef - Class defining types for the L<Open
+NOS|http://open.nos.nl/> REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::TypeDef version 0.01.
+This document describes WWW::NOS::Open::TypeDef version 0.02.
 
 =head1 SYNOPSIS
 
@@ -67,9 +67,11 @@ This document describes WWW::NOS::Open::TypeDef version 0.01.
 
 L<DateTime|DateTime>
 L<Date::Parse|Date::Parse>
-L<URI|URI>
 L<Moose|Moose>
 L<Moose::Util::TypeConstraints|Moose::Util::TypeConstraints>
+L<MooseX::Types|MooseX::Types>
+L<MooseX::Types::Moose|MooseX::Types::Moose>
+L<URI|URI>
 L<namespace::autoclean|namespace::autoclean>
 
 =head1 INCOMPATIBILITIES

@@ -2,21 +2,22 @@ package WWW::NOS::Open::Exceptions;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Exceptions.pm 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: Exceptions.pm 410 2011-01-13 20:39:07Z roland $
+# $Revision: 410 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/Exceptions.pm $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-13 21:39:07 +0100 (Thu, 13 Jan 2011) $
 
 use utf8;
 use 5.006000;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Exception::Class qw(
   NOSOpenInternalServerErrorException
   NOSOpenBadRequestException
   NOSOpenUnauthorizedException
   NOSOpenForbiddenException
+  NOSOpenExceededRangeException
 );
 
 1;
@@ -25,15 +26,16 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg
+=for stopwords Roland van Ipenburg API NOS
 
 =head1 NAME
 
-WWW::NOS::Open::Exceptions - Handles exception information
+WWW::NOS::Open::Exceptions - Handles exception information for the L<Open
+NOS|http://open.nos.nl/> REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::Exceptions version 0.01.
+This document describes WWW::NOS::Open::Exceptions version 0.02.
 
 =head1 SYNOPSIS
 
@@ -42,6 +44,7 @@ This document describes WWW::NOS::Open::Exceptions version 0.01.
     NOSOpenBadRequestException->throw( error => $ERR );
     NOSOpenUnauthorizedException->throw( error => $ERR );
     NOSOpenForbiddenException->throw( error => $ERR );
+    NOSOpenExceededRangeException->throw( error => $ERR );
 
 =head1 DESCRIPTION
 

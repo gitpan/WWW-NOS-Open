@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               WWW-NOS-Open
-version:            0.01
+version:            0.02
 abstract:           Perl framework for the
 author:
     - Roland van Ipenburg <ipenburg@xs4all.nl>

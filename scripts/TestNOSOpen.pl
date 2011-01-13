@@ -2,10 +2,10 @@
 use strict;
 use warnings;
 
-# $Id: TestNOSOpen.pl 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: TestNOSOpen.pl 405 2011-01-04 23:55:37Z roland $
+# $Revision: 405 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/scripts/TestNOSOpen.pl $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-05 00:55:37 +0100 (Wed, 05 Jan 2011) $
 
 use utf8;
 use 5.006000;
@@ -80,101 +80,139 @@ sub main {
 
     $res->add_content_utf8(
         $q->start_html(
-            -title    => $TITLE,
+            -title    => $q->escapeHTML($TITLE),
             -style    => { -code => $css },
             -encoding => q{utf-8},
         )
     );
-    $res->add_content_utf8( $q->p($nos_version) );
+    $res->add_content_utf8( $q->p( $q->escapeHTML($nos_version) ) );
 
-    $res->add_content_utf8( $q->h1(q{Latest news articles}) );
+    $res->add_content_utf8( $q->h1( $q->escapeHTML(q{Latest news articles}) ) );
     my @latest_articles = $nos->get_latest_articles(q{nieuws});
     while ( my $article = shift @latest_articles ) {
         $res->add_content_utf8(
-            $q->h2( { -id => q{id} . $article->get_id }, $article->get_title )
+            $q->h2(
+                { -id => q{id} . $q->escapeHTML( $article->get_id ) },
+                $q->escapeHTML( $article->get_title )
+            )
         );
-        $res->add_content_utf8( $q->p( $article->get_description ) );
-        $res->add_content_utf8( $q->p( $article->get_published ) );
-        $res->add_content_utf8( $q->p( $article->get_last_update ) );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $article->get_description ) ) );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $article->get_published ) ) );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $article->get_last_update ) ) );
         $res->add_content_utf8(
             $q->a(
-                { -href => $article->get_link },
-                $q->img( { -src => $article->get_thumbnail_xs } )
+                { -href => $q->escapeHTML( $article->get_link ) },
+                $q->img(
+                    { -src => $q->escapeHTML( $article->get_thumbnail_xs ) }
+                )
             )
         );
         $res->add_content_utf8(
             $q->a(
-                { -href => $article->get_link },
-                $q->img( { -src => $article->get_thumbnail_s } )
+                { -href => $q->escapeHTML( $article->get_link ) },
+                $q->img(
+                    { -src => $q->escapeHTML( $article->get_thumbnail_s ) }
+                )
             )
         );
         $res->add_content_utf8(
             $q->a(
-                { -href => $article->get_link },
-                $q->img( { -src => $article->get_thumbnail_m } )
+                { -href => $q->escapeHTML( $article->get_link ) },
+                $q->img(
+                    { -src => $q->escapeHTML( $article->get_thumbnail_m ) }
+                )
             )
         );
         if ( my @keywords = @{ $article->get_keywords } ) {
-            $res->add_content_utf8( $q->ul( map { $q->li($_) } @keywords ) );
+            $res->add_content_utf8(
+                $q->ul( map { $q->li( $q->escapeHTML($_) ) } @keywords ) );
         }
     }
 
-    $res->add_content_utf8( $q->h1(q{Latest news videos}) );
-    my @latest_videos = $nos->get_latest_videos(q{nieuws});
+    $res->add_content_utf8( $q->h1( $q->escapeHTML(q{Latest news videos}) ) );
+    my @latest_videos = $nos->get_latest_videos( $q->escapeHTML(q{nieuws}) );
     while ( my $video = shift @latest_videos ) {
         $res->add_content_utf8(
-            $q->h2( { -id => q{id} . $video->get_id }, $video->get_title ) );
-        $res->add_content_utf8( $q->p( $video->get_description ) );
+            $q->h2(
+                { -id => q{id} . $q->escapeHTML( $video->get_id ) },
+                $q->escapeHTML( $video->get_title )
+            )
+        );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $video->get_description ) ) );
         $res->add_content_utf8( $q->p( $video->get_embedcode ) );
-        $res->add_content_utf8( $q->p( $video->get_published ) );
-        $res->add_content_utf8( $q->p( $video->get_last_update ) );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $video->get_published ) ) );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $video->get_last_update ) ) );
         $res->add_content_utf8(
             $q->a(
-                { -href => $video->get_link },
-                $q->img( { -src => $video->get_thumbnail_xs } )
+                { -href => $q->escapeHTML( $video->get_link ) },
+                $q->img(
+                    { -src => $q->escapeHTML( $video->get_thumbnail_xs ) }
+                )
             )
         );
         $res->add_content_utf8(
             $q->a(
-                { -href => $video->get_link },
-                $q->img( { -src => $video->get_thumbnail_s } )
+                { -href => $q->escapeHTML( $video->get_link ) },
+                $q->img(
+                    { -src => $q->escapeHTML( $video->get_thumbnail_s ) }
+                )
             )
         );
         $res->add_content_utf8(
             $q->a(
-                { -href => $video->get_link },
-                $q->img( { -src => $video->get_thumbnail_m } )
+                { -href => $q->escapeHTML( $video->get_link ) },
+                $q->img(
+                    { -src => $q->escapeHTML( $video->get_thumbnail_m ) }
+                )
             )
         );
 
         if ( my @keywords = @{ $video->get_keywords } ) {
-            $res->add_content_utf8( $q->ul( map { $q->li($_) } @keywords ) );
+            $res->add_content_utf8(
+                $q->ul( map { $q->li( $q->escapeHTML($_) ) } @keywords ) );
         }
     }
 
-    $res->add_content_utf8( $q->h1(q{Latest news audio fragments}) );
-    my @latest_audio_fragments = $nos->get_latest_audio_fragments(q{nieuws});
+    $res->add_content_utf8(
+        $q->h1( $q->escapeHTML(q{Latest news audio fragments}) ) );
+    my @latest_audio_fragments =
+      $nos->get_latest_audio_fragments( $q->escapeHTML(q{nieuws}) );
     while ( my $audio_fragment = shift @latest_audio_fragments ) {
         $res->add_content_utf8(
             $q->h2(
-                { -id => q{id} . $audio_fragment->get_id },
-                $audio_fragment->get_title
+                { -id => q{id} . $q->escapeHTML( $audio_fragment->get_id ) },
+                $q->escapeHTML( $audio_fragment->get_title )
             )
         );
-        $res->add_content_utf8( $q->p( $audio_fragment->get_description ) );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $audio_fragment->get_description ) ) );
         $res->add_content_utf8( $q->p( $audio_fragment->get_embedcode ) );
-        $res->add_content_utf8( $q->p( $audio_fragment->get_published ) );
-        $res->add_content_utf8( $q->p( $audio_fragment->get_last_update ) );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $audio_fragment->get_published ) ) );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $audio_fragment->get_last_update ) ) );
         $res->add_content_utf8(
             $q->a(
-                { -href => $audio_fragment->get_link },
+                { -href => $q->escapeHTML( $audio_fragment->get_link ) },
                 $audio_fragment->get_thumbnail_s
-                ? $q->img( { -src => $audio_fragment->get_thumbnail_s } )
-                : $audio_fragment->get_title
+                ? $q->img(
+                    {
+                        -src =>
+                          $q->escapeHTML( $audio_fragment->get_thumbnail_s )
+                    }
+                  )
+                : $q->escapeHTML( $audio_fragment->get_title )
             )
         );
         if ( my @keywords = @{ $audio_fragment->get_keywords } ) {
-            $res->add_content_utf8( $q->ul( map { $q->li($_) } @keywords ) );
+            $res->add_content_utf8(
+                $q->ul( map { $q->li( $q->escapeHTML($_) ) } @keywords ) );
         }
     }
 
@@ -182,61 +220,83 @@ sub main {
     my @results = @{ $result->get_documents };
     my @related = @{ $result->get_related };
     while ( my $result = shift @results ) {
-        $res->add_content_utf8( $q->h3( $result->get_title ) );
-        $res->add_content_utf8( $q->p( $result->get_description ) );
+        $res->add_content_utf8(
+            $q->h3( $q->escapeHTML( $result->get_title ) ) );
+        $res->add_content_utf8(
+            $q->p( $q->escapeHTML( $result->get_description ) ) );
     }
     while ( my $relation = shift @related ) {
-        $res->add_content_utf8( $q->span($relation) );
+        $res->add_content_utf8( $q->span( $q->escapeHTML($relation) ) );
     }
 
     my @tv_days = $nos->get_tv_broadcasts( q{2011-01-01}, q{2011-01-03} );
     while ( my $tv_day = shift @tv_days ) {
-        $res->add_content_utf8( $q->h1( $tv_day->get_type ) );
-        $res->add_content_utf8( $q->h2( $tv_day->get_date ) );
+        $res->add_content_utf8( $q->h1( $q->escapeHTML( $tv_day->get_type ) ) );
+        $res->add_content_utf8( $q->h2( $q->escapeHTML( $tv_day->get_date ) ) );
         my @broadcasts = @{ $tv_day->get_broadcasts };
         while ( my $broadcast = shift @broadcasts ) {
-            $res->add_content_utf8( $q->h3( $broadcast->get_title ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_starttime ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_endtime ) );
+            $res->add_content_utf8(
+                $q->h3( $q->escapeHTML( $broadcast->get_title ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_starttime ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_endtime ) ) );
             $res->add_content_utf8(
                 $q->img(
                     {
-                        -src => $broadcast->get_channel_icon,
-                        -alt => $broadcast->get_channel_name
+                        -src => $q->escapeHTML( $broadcast->get_channel_icon ),
+                        -alt => $q->escapeHTML( $broadcast->get_channel_name )
                     }
                 )
             );
-            $res->add_content_utf8( $q->p( $broadcast->get_channel_code ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_channel_name ) );
-            $res->add_content_utf8( $q->h3( $broadcast->get_title ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_id ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_genre ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_description ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_channel_code ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_channel_name ) ) );
+            $res->add_content_utf8(
+                $q->h3( $q->escapeHTML( $broadcast->get_title ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_id ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_genre ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_description ) ) );
         }
     }
     my @radio_days = $nos->get_radio_broadcasts( q{2011-01-01}, q{2011-01-03} );
     while ( my $radio_day = shift @radio_days ) {
-        $res->add_content_utf8( $q->h1( $radio_day->get_type ) );
-        $res->add_content_utf8( $q->h2( $radio_day->get_date ) );
+        $res->add_content_utf8(
+            $q->h1( $q->escapeHTML( $radio_day->get_type ) ) );
+        $res->add_content_utf8(
+            $q->h2( $q->escapeHTML( $radio_day->get_date ) ) );
         my @broadcasts = @{ $radio_day->get_broadcasts };
         while ( my $broadcast = shift @broadcasts ) {
-            $res->add_content_utf8( $q->h3( $broadcast->get_title ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_starttime ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_endtime ) );
+            $res->add_content_utf8(
+                $q->h3( $q->escapeHTML( $broadcast->get_title ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_starttime ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_endtime ) ) );
             $res->add_content_utf8(
                 $q->img(
                     {
-                        -src => $broadcast->get_channel_icon,
-                        -alt => $broadcast->get_channel_name
+                        -src => $q->escapeHTML( $broadcast->get_channel_icon ),
+                        -alt => $q->escapeHTML( $broadcast->get_channel_name )
                     }
                 )
             );
-            $res->add_content_utf8( $q->p( $broadcast->get_channel_code ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_channel_name ) );
-            $res->add_content_utf8( $q->h3( $broadcast->get_title ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_id ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_genre ) );
-            $res->add_content_utf8( $q->p( $broadcast->get_description ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_channel_code ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_channel_name ) ) );
+            $res->add_content_utf8(
+                $q->h3( $q->escapeHTML( $broadcast->get_title ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_id ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_genre ) ) );
+            $res->add_content_utf8(
+                $q->p( $q->escapeHTML( $broadcast->get_description ) ) );
         }
     }
 

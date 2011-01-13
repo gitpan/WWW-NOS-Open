@@ -2,15 +2,15 @@ package WWW::NOS::Open::Interface;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Interface.pm 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: Interface.pm 410 2011-01-13 20:39:07Z roland $
+# $Revision: 410 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/Interface.pm $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-13 21:39:07 +0100 (Thu, 13 Jan 2011) $
 
 use utf8;
 use 5.006000;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Moose::Role qw/requires/;
 requires 'get_version';
@@ -27,7 +27,7 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API JSON PHP
+=for stopwords Roland van Ipenburg API NOS
 
 =head1 NAME
 
@@ -36,7 +36,7 @@ REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::Interface version 0.01.
+This document describes WWW::NOS::Open::Interface version 0.02.
 
 =head1 SYNOPSIS
 
@@ -45,17 +45,23 @@ This document describes WWW::NOS::Open::Interface version 0.01.
 
 =head1 DESCRIPTION
 
+A role defining the interface of the L<Open NOS|http://open.nos.nl/> REST API.
+
 =head1 SUBROUTINES/METHODS
 
-=head2 C<version>
+=head2 C<get_version>
 
-Gets the version of the server.
+=head2 C<get_latest_articles>
 
-=over
+=head2 C<get_latest_videos>
 
-=item 1. An optional response type, being one of JSON, XML or PHP.
+=head2 C<get_latest_audio_fragments>
 
-=back
+=head2 C<search>
+
+=head2 C<get_tv_broadcasts>
+
+=head2 C<get_radio_broadcasts>
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

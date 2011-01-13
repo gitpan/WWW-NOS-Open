@@ -2,19 +2,19 @@ package WWW::NOS::Open::Broadcast;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Broadcast.pm 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: Broadcast.pm 414 2011-01-13 22:43:18Z roland $
+# $Revision: 414 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/Broadcast.pm $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-13 23:43:18 +0100 (Thu, 13 Jan 2011) $
 
 use utf8;
 use 5.006000;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Moose qw/around has with/;
 use Moose::Util::TypeConstraints qw/enum/;
-use namespace::autoclean -except => 'meta', -also => qr/^__/sxm;
+use namespace::autoclean -also => qr/^__/sxm;
 
 use WWW::NOS::Open::TypeDef qw(NOSDateTime NOSURI);
 
@@ -22,7 +22,7 @@ use Readonly;
 Readonly::Scalar my $UNDER              => q{_};
 Readonly::Scalar my $GETTER             => q{get};
 Readonly::Array my @TV_CHANNEL_CODES    => qw(NL1 NL2 NL3);
-Readonly::Array my @RADIO_CHANNEL_CODES => qw(RA1 RA2 RA3);
+Readonly::Array my @RADIO_CHANNEL_CODES => qw(RA1 RA2 RA3 RA4 RA5 RA6);
 
 has '_id' => (
     is       => 'ro',
@@ -81,16 +81,16 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS DateTime URI
+=for stopwords Roland van Ipenburg API NOS DateTime URI URL HTML
 
 =head1 NAME
 
-WWW::NOS::Open::Broadcast - Base class for the Perl framework for Open NOS
-REST API Broadcasts.
+WWW::NOS::Open::Broadcast - Class representing client side broadcasts in the
+L<Open NOS|http://open.nos.nl/> REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::Broadcast version 0.01.
+This document describes WWW::NOS::Open::Broadcast version 0.02.
 
 =head1 SYNOPSIS
 
@@ -101,6 +101,14 @@ This document describes WWW::NOS::Open::Broadcast version 0.01.
 =head1 SUBROUTINES/METHODS
 
 =head2 C<new>
+
+Create a new WWW::NOS::Open::Broadcast object.
+
+=over
+
+=item 1. A hash containing the properties and their values.
+
+=back
 
 =head2 C<get_id>
 

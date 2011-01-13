@@ -2,18 +2,18 @@ package WWW::NOS::Open::MediaResource;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: MediaResource.pm 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: MediaResource.pm 414 2011-01-13 22:43:18Z roland $
+# $Revision: 414 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/MediaResource.pm $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-13 23:43:18 +0100 (Thu, 13 Jan 2011) $
 
 use utf8;
 use 5.006000;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Moose qw/extends has/;
-use namespace::autoclean -except => 'meta', -also => qr/^__/sxm;
+use namespace::autoclean -also => qr/^__/sxm;
 
 extends 'WWW::NOS::Open::Resource';
 
@@ -36,7 +36,8 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS DateTime URI MediaResources Readonly
+=for stopwords Roland van Ipenburg API NOS DateTime URI MediaResources
+Readonly HTML URL
 
 =head1 NAME
 
@@ -45,7 +46,7 @@ resource in the L<Open NOS|http://open.nos.nl/> REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::MediaResource version 0.01.
+This document describes WWW::NOS::Open::MediaResource version 0.02.
 
 =head1 SYNOPSIS
 
@@ -74,52 +75,53 @@ Create a new media resource object.
 
 =head2 C<get_id>
 
-Returns the id of the article as integer.
+Returns the id of the media resource as integer.
 
 =head2 C<get_title>
 
-Returns the title of the article as string.
+Returns the title of the media resource as string.
 
 =head2 C<get_description>
 
-Returns the description of the article as string.
+Returns the description of the media resource as string.
 
 =head2 C<get_published>
 
-Returns the publishing date of the article as a L<DateTime|DateTime> object.
+Returns the publishing date of the media resource as a L<DateTime|DateTime>
+object.
 
 =head2 C<get_last_update>
 
-Returns the date of the last update for the article as a L<DateTime|DateTime>
-object.
+Returns the date of the last update for the media resource as a
+L<DateTime|DateTime> object.
 
 =head2 C<get_thumbnail_xs>
 
-Returns the URL of the extra small thumbnail for the article as an L<URI|URI>
-object.
+Returns the URL of the extra small thumbnail for the media resource as an
+L<URI|URI> object.
 
 =head2 C<get_thumbnail_s>
 
-Returns the URL of the small thumbnail for the article as an L<URI|URI>
+Returns the URL of the small thumbnail for the media resource as an L<URI|URI>
 object.
 
 =head2 C<get_thumbnail_m>
 
-Returns the URL of the medium sized thumbnail for the article as an L<URI|URI>
-object.
+Returns the URL of the medium sized thumbnail for the media resource as an
+L<URI|URI> object.
 
 =head2 C<get_link>
 
-Returns the URL of the main article as an L<URI|URI> object. 
+Returns the URL of the main media resource as an L<URI|URI> object. 
 
 =head2 C<get_embed_code>
 
-Return the HTML code to embed the media resource in an HTML page.
+Returns the HTML code to embed the media resource in an HTML page.
 
 =head2 C<get_keywords>
 
-Returns the list of keywords for the article as a reference to an array of
-strings.
+Returns the list of keywords for the media resource as a reference to an array
+of strings.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

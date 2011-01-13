@@ -1,12 +1,12 @@
-# $Id: 02_exceptions.t 393 2011-01-03 20:59:03Z roland $
-# $Revision: 393 $
+# $Id: 02_exceptions.t 408 2011-01-06 20:53:25Z roland $
+# $Revision: 408 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/t/02_exceptions.t $
-# $Date: 2011-01-03 21:59:03 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-06 21:53:25 +0100 (Thu, 06 Jan 2011) $
 
 use strict;
 use warnings;
 
-use Test::More tests => 2 + 2;
+use Test::More tests => 6 + 2;
 use Test::NoWarnings;
 use WWW::NOS::Open;
 
@@ -16,6 +16,40 @@ my $MINUTE          = 60;
 
 my $obj = WWW::NOS::Open->new($API_KEY);
 my $e;
+
+eval { $obj->get_radio_broadcasts( q{2010-01-01}, q{2010-01-15} ) };
+$e = Exception::Class->caught('NOSOpenExceededRangeException');
+is( $e, undef, q{not throwing range exceeded error string input} );
+
+eval {
+    $obj->get_radio_broadcasts(
+        DateTime->new( year => 2010, month => 1, day => 1 ),
+        DateTime->new( year => 2010, month => 1, day => 15 ),
+    );
+};
+$e = Exception::Class->caught('NOSOpenExceededRangeException');
+is( $e, undef, q{not throwing range exceeded error DateTime input} );
+eval { $obj->get_radio_broadcasts( q{2010-01-01}, q{2010-01-16} ) };
+$e = Exception::Class->caught('NOSOpenExceededRangeException');
+is(
+    $e->error,
+    q{Date range exceeds maximum of 14 days},
+    q{throwing range exceeded error string input}
+);
+
+eval {
+    $obj->get_radio_broadcasts(
+        DateTime->new( year => 2010, month => 1, day => 1 ),
+        DateTime->new( year => 2010, month => 1, day => 16 ),
+    );
+};
+$e = Exception::Class->caught('NOSOpenExceededRangeException');
+is(
+    $e->error,
+    q{Date range exceeds maximum of 14 days},
+    q{throwing range exceeded error DateTime input}
+);
+
 eval { $obj->get_version; };
 $e = Exception::Class->caught('NOSOpenInternalServerErrorException')
   || Exception::Class->caught('NOSOpenUnauthorizedException');
@@ -48,7 +82,7 @@ q{Dummy server doesn't support custom content in exception response. Need a conn
         $e = Exception::Class->caught('NOSOpenForbiddenException');
     }
     is( $e->error->{ shift @{ [ keys %{ $e->error } ] } }->{error}->{code},
-        302, q{throwing FORBIDDEN error} );
+        301, q{throwing FORBIDDEN error} );
     diag(qq{Waiting $MINUTE seconds for rate to recover...});
     sleep $MINUTE;
 }

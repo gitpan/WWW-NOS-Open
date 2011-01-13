@@ -2,19 +2,19 @@ package WWW::NOS::Open::Document;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Document.pm 403 2011-01-03 21:58:09Z roland $
-# $Revision: 403 $
+# $Id: Document.pm 414 2011-01-13 22:43:18Z roland $
+# $Revision: 414 $
 # $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/Document.pm $
-# $Date: 2011-01-03 22:58:09 +0100 (Mon, 03 Jan 2011) $
+# $Date: 2011-01-13 23:43:18 +0100 (Thu, 13 Jan 2011) $
 
 use utf8;
 use 5.006000;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Moose qw/has/;
 use Moose::Util::TypeConstraints qw/enum/;
-use namespace::autoclean -except => 'meta', -also => qr/^__/sxm;
+use namespace::autoclean -also => qr/^__/sxm;
 
 use WWW::NOS::Open::TypeDef qw(NOSDateTime NOSURI);
 
@@ -22,7 +22,7 @@ use Readonly;
 Readonly::Scalar my $UNDER         => q{_};
 Readonly::Scalar my $GETTER        => q{get};
 Readonly::Array my @CATEGORIES     => qw(Nieuws Sport);
-Readonly::Array my @RESOURCE_TYPES => qw(artikel video audio);
+Readonly::Array my @RESOURCE_TYPES => qw(artikel article video audio);
 
 has '_id' => (
     is       => 'ro',
@@ -106,16 +106,16 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS DateTime URI
+=for stopwords Roland van Ipenburg API NOS DateTime URL URI Readonly
 
 =head1 NAME
 
-WWW::NOS::Open::Document - Document class for the Perl framework for Open NOS
-REST API.
+WWW::NOS::Open::Document - Class representing a client side document in the
+L<Open NOS|http://open.nos.nl/> REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::Document version 0.01.
+This document describes WWW::NOS::Open::Document version 0.02.
 
 =head1 SYNOPSIS
 
@@ -129,9 +129,22 @@ This class represents the documents that appear in the search results.
 
 =head2 C<new>
 
+Create a new document object.
+
+=over
+
+=item 1. A hash containing the properties and their values.
+
+=back
+
 =head2 C<get_id>
 
-Returns the id of the document as integer.
+Returns the id of the document as string.
+
+=head2 C<get_type>
+
+Returns the type of the document as string C<article>, C<artikel>, C<audio> or
+C<video>.
 
 =head2 C<get_title>
 
@@ -178,6 +191,9 @@ L<WWW::NOS::Open::TypeDef|WWW::NOS::Open::TypeDef>
 L<namespace::autoclean|namespace::autoclean>
 
 =head1 INCOMPATIBILITIES
+
+Until the API settles the resource type supports both C<artikel> and
+C<article> for an article type resource.
 
 =head1 DIAGNOSTICS
 
