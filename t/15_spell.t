@@ -1,8 +1,3 @@
-# $Id: 15_spell.t 376 2010-12-11 19:36:51Z roland $
-# $Revision: 376 $
-# $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/t/15_spell.t $
-# $Date: 2010-12-11 20:36:51 +0100 (Sat, 11 Dec 2010) $
-
 use strict;
 use warnings;
 use English;
@@ -24,8 +19,20 @@ if ($EVAL_ERROR) {
 Test::Spelling::add_stopwords(<DATA>);
 Test::Spelling::all_pod_files_spelling_ok();
 __DATA__
+API
+CGI
+DateTime
+DummyServer.pl
 Ipenburg
+JSON
+NOS
+PHP
 RT
-rt
+Readonly
+TestNOSOpen
+URI
+apikey
 cpan
 org
+pl
+rt

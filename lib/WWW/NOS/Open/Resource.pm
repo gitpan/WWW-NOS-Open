@@ -1,21 +1,14 @@
-package WWW::NOS::Open::Resource;    # -*- cperl; cperl-indent-level: 4 -*-
+package WWW::NOS::Open::Resource 0.100;   # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Resource.pm 410 2011-01-13 20:39:07Z roland $
-# $Revision: 410 $
-# $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/Resource.pm $
-# $Date: 2011-01-13 21:39:07 +0100 (Thu, 13 Jan 2011) $
-
 use utf8;
-use 5.006000;
-
-our $VERSION = '0.02';
+use 5.014000;
 
 use Moose qw/has/;
 use Moose::Util::TypeConstraints qw/enum/;
 use MooseX::Types::Moose qw/Undef/;
-use namespace::autoclean -also => qr/^__/sxm;
+use namespace::autoclean '-also' => qr/^__/sxm;
 
 use WWW::NOS::Open::TypeDef qw(NOSDateTime NOSURI);
 
@@ -27,20 +20,20 @@ Readonly::Array my @THUMBS         => qw(xs s m);
 Readonly::Array my @RESOURCE_TYPES => qw(article video audio);
 
 has '_id' => (
-    is       => 'ro',
-    isa      => 'Int',
-    reader   => 'get_id',
-    init_arg => 'id',
+    'is'       => 'ro',
+    'isa'      => 'Int',
+    'reader'   => 'get_id',
+    'init_arg' => 'id',
 );
 
 my @types = qw(type);
 while ( my $type = shift @types ) {
     has $UNDER
       . $type => (
-        is       => 'ro',
-        isa      => enum( [@RESOURCE_TYPES] ),
-        reader   => $GETTER . $UNDER . $type,
-        init_arg => $type,
+        'is'       => 'ro',
+        'isa'      => enum( [@RESOURCE_TYPES] ),
+        'reader'   => $GETTER . $UNDER . $type,
+        'init_arg' => $type,
       );
 }
 
@@ -48,10 +41,10 @@ my @strings = qw(title description);
 while ( my $string = shift @strings ) {
     has $UNDER
       . $string => (
-        is       => 'ro',
-        isa      => 'Str',
-        reader   => $GETTER . $UNDER . $string,
-        init_arg => $string,
+        'is'       => 'ro',
+        'isa'      => 'Str',
+        'reader'   => $GETTER . $UNDER . $string,
+        'init_arg' => $string,
       );
 }
 
@@ -59,11 +52,11 @@ my @dates = qw(published last_update);
 while ( my $date = shift @dates ) {
     has $UNDER
       . $date => (
-        is       => 'ro',
-        isa      => NOSDateTime,
-        coerce   => 1,
-        reader   => $GETTER . $UNDER . $date,
-        init_arg => $date,
+        'is'       => 'ro',
+        'isa'      => 'WWW::NOS::Open::TypeDef::NOSDateTime',
+        'coerce'   => 1,
+        'reader'   => $GETTER . $UNDER . $date,
+        'init_arg' => $date,
       );
 }
 
@@ -72,21 +65,21 @@ push @uris, q{link};
 while ( my $uri = shift @uris ) {
     has $UNDER
       . $uri => (
-        is       => 'ro',
-        isa      => NOSURI | Undef,
-        coerce   => 1,
-        reader   => $GETTER . $UNDER . $uri,
-        init_arg => $uri,
+        'is'       => 'ro',
+        'isa'      => 'WWW::NOS::Open::TypeDef::NOSURI | Undef',
+        'coerce'   => 1,
+        'reader'   => $GETTER . $UNDER . $uri,
+        'init_arg' => $uri,
       );
 }
 
 has '_keywords' => (
-    traits   => ['Array'],
-    is       => 'ro',
-    isa      => 'ArrayRef[Str]',
-    default  => sub { [] },
-    reader   => 'get_keywords',
-    init_arg => 'keywords',
+    'traits'   => ['Array'],
+    'is'       => 'ro',
+    'isa'      => 'ArrayRef[Str]',
+    'default'  => sub { [] },
+    'reader'   => 'get_keywords',
+    'init_arg' => 'keywords',
 );
 
 no Moose;
@@ -101,16 +94,13 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS DateTime URI multiline Readonly
-
 =head1 NAME
 
-WWW::NOS::Open::Resource - Class representing a client side resource in the
-L<Open NOS|http://open.nos.nl/> REST API.
+WWW::NOS::Open::Resource - client side resource in the Open NOS REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::Resource version 0.02.
+This document describes WWW::NOS::Open::Resource version 0.100.
 
 =head1 SYNOPSIS
 
@@ -156,7 +146,6 @@ L<URI|URI> object.
 as L<URI|URI> object.
 
 =item link: The link to the complete resource as L<URI|URI> object.
-=back
 
 =item keywords: A reference to a list of keywords for the resource.
 
@@ -212,11 +201,19 @@ strings.
 
 =head1 DEPENDENCIES
 
-L<Moose::Util::TypeConstraints|Moose::Util::TypeConstraints>
-L<Moose|Moose>
-L<Readonly|Readonly>
-L<WWW::NOS::Open::TypeDef|WWW::NOS::Open::TypeDef>
-L<namespace::autoclean|namespace::autoclean>
+=over 4
+
+=item * L<Moose::Util::TypeConstraints|Moose::Util::TypeConstraints>
+
+=item * L<Moose|Moose>
+
+=item * L<Readonly|Readonly>
+
+=item * L<WWW::NOS::Open::TypeDef|WWW::NOS::Open::TypeDef>
+
+=item * L<namespace::autoclean|namespace::autoclean>
+
+=back
 
 =head1 INCOMPATIBILITIES
 
@@ -229,14 +226,14 @@ L<RT for rt.cpan.org|https://rt.cpan.org/Dist/Display.html?Queue=WWW-NOS-Open>.
 
 =head1 AUTHOR
 
-Roland van Ipenburg  C<< <ipenburg@xs4all.nl> >>
+Roland van Ipenburg, E<lt>ipenburg@xs4all.nlE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 by Roland van Ipenburg
+Copyright 2012 by Roland van Ipenburg
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.12.2 or,
+it under the same terms as Perl itself, either Perl version 5.14.0 or,
 at your option, any later version of Perl 5 you may have available.
 
 =head1 DISCLAIMER OF WARRANTY

@@ -1,34 +1,28 @@
-package WWW::NOS::Open::TypeDef;    # -*- cperl; cperl-indent-level: 4 -*-
+package WWW::NOS::Open::TypeDef 0.100;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: TypeDef.pm 410 2011-01-13 20:39:07Z roland $
-# $Revision: 410 $
-# $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/TypeDef.pm $
-# $Date: 2011-01-13 21:39:07 +0100 (Thu, 13 Jan 2011) $
-
 use utf8;
-use 5.006000;
-
-our $VERSION = '0.02';
+use 5.014000;
 
 use DateTime;
 use Date::Parse;
 use Moose qw/around has with/;
 use Moose::Util::TypeConstraints qw/as coerce from where subtype via/;
-use MooseX::Types -declare => [qw(NOSURI NOSDateTime)];
+use MooseX::Types '-declare' => [qw(NOSURI NOSDateTime)];
 use MooseX::Types::Moose qw/Str/;
 use URI;
-use namespace::autoclean -also => qr/^__/sxm;
+use namespace::autoclean '-also' => qr/^__/sxm;
 
 ## no critic qw(ProhibitCallsToUndeclaredSubs)
-class_type NOSURI, { class => 'URI' };
+class_type NOSURI, { 'class' => 'URI' };
 coerce NOSURI, from Str, via { URI->new($_) };
 
-class_type NOSDateTime, { class => 'DateTime' };
+class_type NOSDateTime, { 'class' => 'DateTime' };
 coerce NOSDateTime,
 ## use critic
-  from Str, via { DateTime->from_epoch( epoch => Date::Parse::str2time($_) ) };
+  from Str,
+  via { DateTime->from_epoch( 'epoch' => Date::Parse::str2time($_) ) };
 
 no Moose;
 
@@ -42,16 +36,13 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS DateTime URI TypeDef
-
 =head1 NAME
 
-WWW::NOS::Open::TypeDef - Class defining types for the L<Open
-NOS|http://open.nos.nl/> REST API.
+WWW::NOS::Open::TypeDef - types for the Open NOS REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::TypeDef version 0.02.
+This document describes WWW::NOS::Open::TypeDef version 0.100.
 
 =head1 SYNOPSIS
 
@@ -65,14 +56,25 @@ This document describes WWW::NOS::Open::TypeDef version 0.02.
 
 =head1 DEPENDENCIES
 
-L<DateTime|DateTime>
-L<Date::Parse|Date::Parse>
-L<Moose|Moose>
-L<Moose::Util::TypeConstraints|Moose::Util::TypeConstraints>
-L<MooseX::Types|MooseX::Types>
-L<MooseX::Types::Moose|MooseX::Types::Moose>
-L<URI|URI>
-L<namespace::autoclean|namespace::autoclean>
+=over 4
+
+=item * L<DateTime|DateTime>
+
+=item * L<Date::Parse|Date::Parse>
+
+=item * L<Moose|Moose>
+
+=item * L<Moose::Util::TypeConstraints|Moose::Util::TypeConstraints>
+
+=item * L<MooseX::Types|MooseX::Types>
+
+=item * L<MooseX::Types::Moose|MooseX::Types::Moose>
+
+=item * L<URI|URI>
+
+=item * L<namespace::autoclean|namespace::autoclean>
+
+=back
 
 =head1 INCOMPATIBILITIES
 
@@ -85,14 +87,14 @@ L<RT for rt.cpan.org|https://rt.cpan.org/Dist/Display.html?Queue=WWW-NOS-Open>.
 
 =head1 AUTHOR
 
-Roland van Ipenburg  C<< <ipenburg@xs4all.nl> >>
+Roland van Ipenburg, E<lt>ipenburg@xs4all.nlE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 by Roland van Ipenburg
+Copyright 2012 by Roland van Ipenburg
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.12.2 or,
+it under the same terms as Perl itself, either Perl version 5.14.0 or,
 at your option, any later version of Perl 5 you may have available.
 
 =head1 DISCLAIMER OF WARRANTY

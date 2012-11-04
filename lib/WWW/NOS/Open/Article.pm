@@ -1,19 +1,12 @@
-package WWW::NOS::Open::Article;    # -*- cperl; cperl-indent-level: 4 -*-
+package WWW::NOS::Open::Article 0.100;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Article.pm 414 2011-01-13 22:43:18Z roland $
-# $Revision: 414 $
-# $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/Article.pm $
-# $Date: 2011-01-13 23:43:18 +0100 (Thu, 13 Jan 2011) $
-
 use utf8;
-use 5.006000;
-
-our $VERSION = '0.02';
+use 5.014000;
 
 use Moose qw/extends/;
-use namespace::autoclean -also => qr/^__/sxm;
+use namespace::autoclean '-also' => qr/^__/sxm;
 
 extends 'WWW::NOS::Open::Resource';
 
@@ -29,16 +22,13 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS DateTime URI URL
-
 =head1 NAME
 
-WWW::NOS::Open::Article - Class representing a client side article in the
-L<Open NOS|http://open.nos.nl/> REST API.
+WWW::NOS::Open::Article - client side article in the Open NOS REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::Article version 0.02.
+This document describes WWW::NOS::Open::Article version 0.100.
 
 =head1 SYNOPSIS
 
@@ -108,8 +98,13 @@ strings.
 
 =head1 DEPENDENCIES
 
-L<Moose|Moose>
-L<namespace::autoclean|namespace::autoclean>
+=over 4
+
+=item * L<Moose|Moose>
+
+=item * L<namespace::autoclean|namespace::autoclean>
+
+=back
 
 =head1 INCOMPATIBILITIES
 
@@ -122,14 +117,14 @@ L<RT for rt.cpan.org|https://rt.cpan.org/Dist/Display.html?Queue=WWW-NOS-Open>.
 
 =head1 AUTHOR
 
-Roland van Ipenburg  C<< <ipenburg@xs4all.nl> >>
+Roland van Ipenburg, E<lt>ipenburg@xs4all.nlE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 by Roland van Ipenburg
+Copyright 2012 by Roland van Ipenburg
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.12.2 or,
+it under the same terms as Perl itself, either Perl version 5.14.0 or,
 at your option, any later version of Perl 5 you may have available.
 
 =head1 DISCLAIMER OF WARRANTY

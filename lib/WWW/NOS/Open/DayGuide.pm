@@ -1,20 +1,13 @@
-package WWW::NOS::Open::DayGuide;    # -*- cperl; cperl-indent-level: 4 -*-
+package WWW::NOS::Open::DayGuide 0.100;   # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: DayGuide.pm 410 2011-01-13 20:39:07Z roland $
-# $Revision: 410 $
-# $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/DayGuide.pm $
-# $Date: 2011-01-13 21:39:07 +0100 (Thu, 13 Jan 2011) $
-
 use utf8;
-use 5.006000;
-
-our $VERSION = '0.02';
+use 5.014000;
 
 use Moose qw/around has with/;
 use Moose::Util::TypeConstraints qw/enum/;
-use namespace::autoclean -also => qr/^__/sxm;
+use namespace::autoclean '-also' => qr/^__/sxm;
 
 use WWW::NOS::Open::TypeDef qw(NOSDateTime NOSURI);
 
@@ -22,25 +15,25 @@ use Readonly;
 Readonly::Array my @GUIDE_TYPES => qw(tv radio);
 
 has '_type' => (
-    is       => 'ro',
-    isa      => enum( [@GUIDE_TYPES] ),
-    reader   => 'get_type',
-    init_arg => 'type',
+    'is'       => 'ro',
+    'isa'      => enum( [@GUIDE_TYPES] ),
+    'reader'   => 'get_type',
+    'init_arg' => 'type',
 );
 
 has '_date' => (
-    is       => 'ro',
-    isa      => NOSDateTime,
-    coerce   => 1,
-    reader   => 'get_date',
-    init_arg => 'date',
+    'is'       => 'ro',
+    'isa'      => NOSDateTime,
+    'coerce'   => 1,
+    'reader'   => 'get_date',
+    'init_arg' => 'date',
 );
 
-has _broadcasts => (
-    is       => 'ro',
-    isa      => 'ArrayRef[WWW::NOS::Open::Broadcast]',
-    reader   => 'get_broadcasts',
-    init_arg => 'broadcasts',
+has '_broadcasts' => (
+    'is'       => 'ro',
+    'isa'      => 'ArrayRef[WWW::NOS::Open::Broadcast]',
+    'reader'   => 'get_broadcasts',
+    'init_arg' => 'broadcasts',
 );
 
 no Moose;
@@ -55,16 +48,13 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS DateTime URI DayGuide
-
 =head1 NAME
 
-WWW::NOS::Open::DayGuide - Class representing a client side television or
-radio program guide for a day in the L<Open NOS|http://open.nos.nl/> REST API.
+WWW::NOS::Open::DayGuide - client side television or radio program guide
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::DayGuide version 0.02.
+This document describes WWW::NOS::Open::DayGuide version 0.100.
 
 =head1 SYNOPSIS
 
@@ -104,9 +94,15 @@ L<WWW::NOS::Open::Broadcast|WWW::NOS::Open::Broadcast> objects.
 
 =head1 DEPENDENCIES
 
-L<Moose|Moose>
-L<Moose::Util::TypeConstraints|Moose::Util::TypeConstraints>
-L<namespace::autoclean|namespace::autoclean>
+=over 4
+
+=item * L<Moose|Moose>
+
+=item * L<Moose::Util::TypeConstraints|Moose::Util::TypeConstraints>
+
+=item * L<namespace::autoclean|namespace::autoclean>
+
+=back
 
 =head1 INCOMPATIBILITIES
 
@@ -119,14 +115,14 @@ L<RT for rt.cpan.org|https://rt.cpan.org/Dist/Display.html?Queue=WWW-NOS-Open>.
 
 =head1 AUTHOR
 
-Roland van Ipenburg  C<< <ipenburg@xs4all.nl> >>
+Roland van Ipenburg, E<lt>ipenburg@xs4all.nlE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 by Roland van Ipenburg
+Copyright 2012 by Roland van Ipenburg
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.12.2 or,
+it under the same terms as Perl itself, either Perl version 5.14.0 or,
 at your option, any later version of Perl 5 you may have available.
 
 =head1 DISCLAIMER OF WARRANTY

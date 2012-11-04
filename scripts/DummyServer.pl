@@ -1,50 +1,45 @@
-#!/usr/bin/perl -w    # -*- cperl; cperl-indent-level: 4 -*-
+#!/usr/bin/env perl -w   # -*- cperl; cperl-indent-level: 4 -*-
+## no critic qw(ProhibitCallsToUnexportedSubs RestrictLongStrings ProhibitImplicitNewlines RequireASCII)
 use strict;
 use warnings;
 
-# $Id: DummyServer.pl 407 2011-01-06 01:06:07Z roland $
-# $Revision: 407 $
-# $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/scripts/DummyServer.pl $
-# $Date: 2011-01-06 02:06:07 +0100 (Thu, 06 Jan 2011) $
-
 use utf8;
-use 5.006000;
+use 5.014000;
 
-our $VERSION = '0.01';
+our $VERSION = '0.100';
 
 use CGI qw/:all/;
 use Getopt::Long;
 use HTTP::Server::Brick;
 use HTTP::Status qw(:constants status_message);
 use Pod::Usage;
+use Pod::Usage::CommandLine;
 
 use Readonly;
-## no critic qw(ProhibitCallsToUnexportedSubs)
 Readonly::Scalar my $EMPTY           => q{};
 Readonly::Scalar my $SPACE           => q{ };
 Readonly::Scalar my $SLASH           => q{/};
 Readonly::Scalar my $FALLBACK_OUTPUT => q{PHP};
-Readonly::Scalar my $CONNECTOR_PORT  => 8888;
+Readonly::Scalar my $CONNECTOR_PORT  => 18_081;
 Readonly::Scalar my $MAX_REQUESTS    => 100;
 Readonly::Scalar my $API_KEY         => q{TEST};
 Readonly::Scalar my $API_VERSION     => q{v1};
 Readonly::Scalar my $CHARSET         => q{; charset=utf-8};
 Readonly::Scalar my $ROOT            => qq{/$API_VERSION/};
-Readonly::Scalar my $STRIP_QUERY     => qr{^/\?}sxm;
+Readonly::Scalar my $STRIP_QUERY     => qr{^/[?]}sxm;
 
 Readonly::Array my @GETOPT_CONFIG =>
   qw(no_ignore_case bundling auto_version auto_help);
-Readonly::Array my @GETOPTIONS =>
-  ( q{port|p=s}, q{help|h}, q{verbose|v+}, );
-Readonly::Hash my %OPTS_DEFAULT => ( port => $CONNECTOR_PORT, );
+Readonly::Array my @GETOPTIONS => ( q{port|p=s}, q{verbose|v+}, );
+Readonly::Hash my %OPTS_DEFAULT => ( 'port' => $CONNECTOR_PORT, );
 Readonly::Hash my %OUTPUT => (
-    json => q{application/json},
-    xml  => q{text/xml},
-    php  => q{text/plain},
+    'json' => q{application/json},
+    'xml'  => q{text/xml},
+    'php'  => q{text/plain},
 );
 Readonly::Hash my %RESPONSE => (
-    version => {
-        json => q{{
+    'version' => {
+        'json' => q{{
     "version": [
         {
             "version": "v1",
@@ -52,18 +47,18 @@ Readonly::Hash my %RESPONSE => (
         }
     ]   
         }},
-        xml => q{<?xml version="1.0" encoding="UTF-8"?>
+        'xml' => q{<?xml version="1.0" encoding="UTF-8"?>
 <list type="version" itemcount="1">
     <item>
         <version><![CDATA[v1]]></version>
         <build><![CDATA[0.0.1]]></build>
     </item>
 </list>},
-        php =>
+        'php' =>
 q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1";}}}},
     },
-    latest_article => {
-        json => q{{
+    'latest_article' => {
+        'json' => q{{
 "latest_article": [
     [
         {
@@ -106,7 +101,7 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
         }
     ]
 ]}},
-        xml => q{<?xml version="1.0" encoding="UTF-8"?>
+        'xml' => q{<?xml version="1.0" encoding="UTF-8"?>
 <list  type="article" itemcount="10">
     <article>
         <id>175418</id>
@@ -128,8 +123,8 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
     </article>
 </list>},
     },
-    latest_video => {
-        json => q{{
+    'latest_video' => {
+        'json' => q{{
     "latest_video": [
         [
             {
@@ -174,7 +169,7 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
     ]
    ]
 }},
-        xml => q{<?xml version="1.0" encoding="UTF-8"?>
+        'xml' => q{<?xml version="1.0" encoding="UTF-8"?>
 <list type="latest_video" itemcount="2">
     <video>
         <id>175327</id>
@@ -217,8 +212,8 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
     </video>
 </list>},
     },
-    latest_audio => {
-        json => q{{
+    'latest_audio' => {
+        'json' => q{{
     "latest_audio": [
         [
             {
@@ -263,7 +258,7 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
         ]
     ]
         }},
-        xml => q{<?xml version="1.0" encoding="UTF-8"?>
+        'xml' => q{<?xml version="1.0" encoding="UTF-8"?>
 <list type="latest_audio" itemcount="2">
     <audio>
         <id>175384</id>
@@ -306,8 +301,8 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
     </audio>
 </list>},
     },
-    search => {
-        json => q{{
+    'search' => {
+        'json' => q{{
     "search":[
         {
             "documents":[
@@ -349,7 +344,7 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
         }
     ]
         }},
-        xml => q{<?xml version="1.0" encoding="UTF-8"?>
+        'xml' => q{<?xml version="1.0" encoding="UTF-8"?>
 <list type="search" itemcount="1">
     <documents>
         <document>
@@ -384,8 +379,8 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
     </related>
 </list>},
     },
-    guide_radio => {
-        json => q{{
+    'guide_radio' => {
+        'json' => q{{
     guide: [
         [
             {
@@ -437,7 +432,7 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
         ]
     ]
         }},
-        xml => q{<?xml version="1.0" encoding="UTF-8"?>
+        'xml' => q{<?xml version="1.0" encoding="UTF-8"?>
 <list type="guide" daycount="2" itemcount="60">
     <dayguide type="radio" date="2010-10-06">
         <item>
@@ -482,8 +477,8 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
 </list>
         },
     },
-    guide_tv => {
-        json => q{{
+    'guide_tv' => {
+        'json' => q{{
     "guide": [
         [
             {
@@ -547,7 +542,7 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
         ]
     ]
         }},
-        xml => q{<?xml version="1.0" encoding="UTF-8"?>
+        'xml' => q{<?xml version="1.0" encoding="UTF-8"?>
 <list type="guide" daycount="2" itemcount="60">
 <dayguide type="tv" date="2010-10-06">
 <item>
@@ -606,30 +601,29 @@ q{a:1:{s:7:"version";a:1:{i:0;a:2:{s:7:"version";s:2:"v1";s:5:"build";s:5:"0.0.1
     },
 );
 Readonly::Hash my %ERROR => (
-    bad_request_missing =>
+    'bad_request_missing' =>
       q{{"badrequest":{"error":{"code":101,"message":"API-key not found"}}}},
-    bad_request_invalid =>
+    'bad_request_invalid' =>
 q{{"wrong param value":{"error":{"code":"111","message":"Param output must be of value (php,xml,json)"}}}},
-    unauthorized =>
+    'unauthorized' =>
 q{{"unauthorized, invalid key":{"error":{"code":201,"message":"Invalid key"}}}},
-    forbidden =>
+    'forbidden' =>
 q{{"forbidden, rate limit":{"error":{"code":301,"message":"Rate limit, max requests per minute is set at 60"}}}},
 );
-## use critic
 
 Getopt::Long::Configure(@GETOPT_CONFIG);
 my %opts = %OPTS_DEFAULT;
 Getopt::Long::GetOptions( \%opts, @GETOPTIONS ) or Pod::Usage::pod2usage(2);
 
-my $server = HTTP::Server::Brick->new( port => $opts{port} );
+my $server = HTTP::Server::Brick->new( 'port' => $opts{'port'} );
 
 my $requests = 0;
 
 $server->mount(
     $ROOT => {
-        handler  => \&main,
-        wildcard => 1,
-    }
+        'handler'  => \&main,
+        'wildcard' => 1,
+    },
 );
 
 sub main {
@@ -638,52 +632,73 @@ sub main {
     $uri =~ s{$STRIP_QUERY}{}smx;
     my $q = CGI->new($uri);
     my %param = split $SLASH, $uri;
-    if ( !defined $OUTPUT{ lc $param{output} } ) {
-        $res->add_content_utf8( $ERROR{bad_request_invalid} );
-        $param{output} = $FALLBACK_OUTPUT;
-        $res->header( 'Content-Type', $OUTPUT{ lc $param{output} } . $CHARSET );
-        $res->header( 'Status',
-            HTTP_BAD_REQUEST . $SPACE . status_message(HTTP_BAD_REQUEST) );
-        $res->code(HTTP_BAD_REQUEST);
+    if ( !defined $OUTPUT{ lc $param{'output'} } ) {
+        $res->add_content_utf8( $ERROR{'bad_request_invalid'} );
+        $param{'output'} = $FALLBACK_OUTPUT;
+        $res->header( 'Content-Type',
+            $OUTPUT{ lc $param{'output'} } . $CHARSET );
+        $res->header(
+            'Status',
+            HTTP::Status::HTTP_BAD_REQUEST
+              . $SPACE
+              . status_message(HTTP::Status::HTTP_BAD_REQUEST),
+        );
+        $res->code(HTTP::Status::HTTP_BAD_REQUEST);
     }
-    $res->header( 'Content-Type', $OUTPUT{ lc $param{output} } . $CHARSET );
-    if ( !defined $param{key} ) {
-        $res->add_content_utf8( $ERROR{bad_request_missing} );
-        $res->header( 'Status',
-            HTTP_BAD_REQUEST . $SPACE . status_message(HTTP_BAD_REQUEST) );
-        $res->code(HTTP_BAD_REQUEST);
+    $res->header( 'Content-Type', $OUTPUT{ lc $param{'output'} } . $CHARSET );
+    if ( !defined $param{'key'} ) {
+        $res->add_content_utf8( $ERROR{'bad_request_missing'} );
+        $res->header(
+            'Status',
+            HTTP::Status::HTTP_BAD_REQUEST
+              . $SPACE
+              . status_message(HTTP::Status::HTTP_BAD_REQUEST),
+        );
+        $res->code(HTTP::Status::HTTP_BAD_REQUEST);
     }
-    if ( $param{key} ne $API_KEY ) {
-        $res->header( 'Status',
-            HTTP_UNAUTHORIZED . $SPACE . status_message(HTTP_UNAUTHORIZED) );
-        # TODO: This also sets the content, which we don't want:
-        # (this is a TODO in HTTP::Server::Brick, so fixing it there is the way to go)
-        $res->code(HTTP_UNAUTHORIZED);
-        $res->add_content_utf8( $ERROR{unauthorized} );
+    if ( $param{'key'} ne $API_KEY ) {
+        $res->header(
+            'Status',
+            HTTP::Status::HTTP_UNAUTHORIZED
+              . $SPACE
+              . status_message(HTTP::Status::HTTP_UNAUTHORIZED),
+        );
+
+        ## no critic qw(ProhibitFlagComments)
+  # TODO: This also sets the content, which we don't want:
+  # (this is a TODO in HTTP::Server::Brick, so fixing it there is the way to go)
+        ## use critic
+        $res->code(HTTP::Status::HTTP_UNAUTHORIZED);
+        $res->add_content_utf8( $ERROR{'unauthorized'} );
     }
     $requests++;
 
     # dummy rate limit tester:
     if ( $requests > $MAX_REQUESTS ) {
-        $res->add_content_utf8( $ERROR{forbidden} );
-        $res->header( 'Status',
-            HTTP_FORBIDDEN . $SPACE . status_message(HTTP_FORBIDDEN) );
+        $res->add_content_utf8( $ERROR{'forbidden'} );
+        $res->header(
+            'Status',
+            HTTP::Status::HTTP_FORBIDDEN
+              . $SPACE
+              . status_message(HTTP::Status::HTTP_FORBIDDEN),
+        );
         $requests = 0;
-        $res->code(HTTP_FORBIDDEN);
+        $res->code(HTTP::Status::HTTP_FORBIDDEN);
     }
-    if ( defined $param{index} && $param{index} eq q{version} ) {
-        $res->add_content_utf8( $RESPONSE{version}->{ lc $param{output} } );
+    if ( defined $param{'index'} && $param{'index'} eq q{version} ) {
+        $res->add_content_utf8( $RESPONSE{'version'}->{ lc $param{'output'} } );
     }
-    if ( defined $param{latest} ) {
+    if ( defined $param{'latest'} ) {
         $res->add_content_utf8(
-            $RESPONSE{ q{latest_} . $param{latest} }->{ lc $param{output} } );
+            $RESPONSE{ q{latest_} . $param{'latest'} }->{ lc $param{'output'} },
+        );
     }
-    if ( defined $param{search} && $param{search} eq q{query} ) {
-        $res->add_content_utf8( $RESPONSE{search}->{ lc $param{output} } );
+    if ( defined $param{'search'} && $param{'search'} eq q{query} ) {
+        $res->add_content_utf8( $RESPONSE{'search'}->{ lc $param{'output'} } );
     }
-    if ( defined $param{guide} ) {
+    if ( defined $param{'guide'} ) {
         $res->add_content_utf8(
-            $RESPONSE{ q{guide_} . $param{guide} }->{ lc $param{output} } );
+            $RESPONSE{ q{guide_} . $param{'guide'} }->{ lc $param{'output'} } );
     }
 
     return 1;
@@ -695,17 +710,18 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg DummyServer.pl
-
 =head1 NAME
 
-=head1 VERSION
-
-This document describes C<DummyServer.pl> version 0.01
+DummyServer.pl - a dummy NOS Open server to test the API against
 
 =head1 USAGE
 
-    ./DummyServer.pl --port=PORT
+B<./DummyServer.pl> [B<--port=PORT>]
+
+=head1 DESCRIPTION
+
+For debugging against a server that isn't the NOS Open live server, this script
+provides the same API against limited content.
 
 =head1 REQUIRED ARGUMENTS
 
@@ -715,7 +731,25 @@ None.
 
 =over 4
 
-=item B<--port> port number to listen on.
+=item B< -?, -h, --help>
+
+Show help
+
+=item B< -m, --man>
+
+Show manpage
+
+=item B< -v, --verbose>
+
+Be more verbose
+
+=item B<--version>
+
+Show version and license
+
+=item B<--port>
+
+Port number to listen on, defaults to port 18081
 
 =back
 
@@ -727,17 +761,19 @@ None.
 
 =head1 DEPENDENCIES
 
-L<CGI|CGI>
-L<Getopt::Long|Getopt::Long>
-L<HTTP::Server::Brick|HTTP::Server::Brick>
-L<Pod::Usage|Pod::Usage>
-L<Readonly|Readonly>
+Perl 5.14.0, CGI, Getopt::Long, HTTP::Server::Brick, Pod::Usage,
+Pod::Usage::CommandLine, Readonly, WWW::NOS::Open
 
 =head1 INCOMPATIBILITIES
 
+Version 2 of the API is not provided.
+
 =head1 BUGS AND LIMITATIONS
 
-=head1 DESCRIPTION
+Only version 1 of the API is provided.
+
+Please report any bugs or feature requests at
+L<RT for rt.cpan.org|https://rt.cpan.org/Dist/Display.html?Queue=WWW-NOS-Open>.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
@@ -745,37 +781,37 @@ Using the defaults it starts the HTTP service on port 18081.
 
 =head1 AUTHOR
 
-Roland van Ipenburg  C<< <ipenburg@xs4all.nl> >>
+Roland van Ipenburg, E<lt>ipenburg@xs4all.nlE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-    Copyright 2011 Roland van Ipenburg
+Copyright 2012 by Roland van Ipenburg
 
-    This library is free software; you can redistribute it and/or modify
-    it under the same terms as Perl itself, either Perl version 5.12.2 or,
-    at your option, any later version of Perl 5 you may have available.
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.14.0 or,
+at your option, any later version of Perl 5 you may have available.
 
 =head1 DISCLAIMER OF WARRANTY
 
-    BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-    FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
-    OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-    PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-    EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
-    ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
-    YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
-    NECESSARY SERVICING, REPAIR, OR CORRECTION.
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
 
-    IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-    WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-    REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENSE, BE
-    LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
-    OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
-    THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
-    RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
-    FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
-    SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
-    SUCH DAMAGES.
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENSE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
 
 =cut

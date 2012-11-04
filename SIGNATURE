@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.66.
+signed via the Module::Signature module, version 0.68.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -14,44 +14,46 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 d67b646b3b14057ead05ce21e9231ee145d659b8 Changes
-SHA1 8cf85958a8203cc7c2f7b9ffdf99885b949a8315 MANIFEST
-SHA1 6904731740ea38ddd6e5373b33b13dba926f5979 META.yml
-SHA1 08c48f3580e26362a3cb6f3a68ededd5bec1109e Makefile.PL
-SHA1 ec0eb3dc613b922cd42107528b0aac92de917dc0 README
-SHA1 fd5a340acb0c01f60584df8c79e29c2fcc8f63c9 lib/WWW/NOS/Open.pm
-SHA1 c6c0ef9b86dbb072214bb2c2830f5390f62cf931 lib/WWW/NOS/Open/Article.pm
-SHA1 8a403af2c7accd108e7371869db21e2e4e620ff3 lib/WWW/NOS/Open/AudioFragment.pm
-SHA1 1d48ad144382a25d2e72cd6209e42a271ab29ef7 lib/WWW/NOS/Open/Broadcast.pm
-SHA1 dc358739936fa9da452226e74197cbae00cdc88e lib/WWW/NOS/Open/DayGuide.pm
-SHA1 f893457812e8571dd817c288aee8ab629f2011c5 lib/WWW/NOS/Open/Document.pm
-SHA1 927a91f86d24a7a3abf03b9a8afd825cd6588ecf lib/WWW/NOS/Open/Exceptions.pm
-SHA1 69b93e370e17cb343ea19fd190db4bffa09b1455 lib/WWW/NOS/Open/Interface.pm
-SHA1 50542997a5702efbc5c8d6264011034b648bc868 lib/WWW/NOS/Open/MediaResource.pm
-SHA1 3e92eb10fa4d996626d155b47dd8ad5b83e7283f lib/WWW/NOS/Open/Resource.pm
-SHA1 86bfa39cc55ab12104abf767148f69e7304ae8a9 lib/WWW/NOS/Open/Result.pm
-SHA1 8d2affe9479bdf5e99fd1d814220ccffe38dcf44 lib/WWW/NOS/Open/TypeDef.pm
-SHA1 73a3450d23758a3e30082457f9b93d1305261010 lib/WWW/NOS/Open/Version.pm
-SHA1 5f28e263233906d3e1674a4663c2ff7372b1a031 lib/WWW/NOS/Open/Video.pm
-SHA1 3d04f4021a544291f32e547c850b914b78f52deb scripts/DummyServer.pl
-SHA1 f33cebcddbc6fe134ef07127bd8ce7775a186a9e scripts/TestNOSOpen.pl
-SHA1 4275fa6d664cd9f17708a9ff8cdef201dfbdda5e t/00_base.t
-SHA1 0ca7d7a64c329c73edcd89afb4003324a49289c8 t/00_dependencies.t
-SHA1 d84fa345be3549f08318b0a519da6dd6c6068000 t/00_signature.t
-SHA1 211441a029e9e24ed4716a02d9ac2484617820ab t/01_live.t
-SHA1 7018c88f7c59726f2fc6c762f15e3c40d7dfed2c t/02_exceptions.t
-SHA1 495bb1cea8099c31c8f11a02db0a54c66c2a2cfb t/09_pod.t
-SHA1 56aea6bea25d4b58e132e3d005ed5712e8f18a6c t/10_pod-coverage.t
-SHA1 8ee15203a012d060d61a80015332358390e43d2d t/11_test-coverage.t
-SHA1 f309ffa58309ac603fc1dddff4e6e3c7b0dc509c t/12_manifest.t
-SHA1 f6603498ff46b2b338784a5819e1a9da17e48c63 t/13_critic.t
-SHA1 82899fa422a2ce38b5b47bcecfa5e212ca5ad4ac t/14_kwalitee.t
-SHA1 8eba5ab21bb118f2b8fd9a3eb24edac5a8cdc75f t/15_spell.t
-SHA1 a41f990087aa8729bbf49d574a42586c823ad306 t/perlcriticrc
+SHA1 977166ea987241aff639743b0ee92a3a2b0e179b Build.PL
+SHA1 5ded7925d4eeff85b9436a9cf992acf21aa10c12 Changes
+SHA1 aba93489b583ce9cb5aded7de50c56309870f2e7 MANIFEST
+SHA1 a612dc1b261fab2dc82f07ddcb4cf128b5334c3c MANIFEST.SKIP
+SHA1 f745019e984c7deb09542c246106a61982bf2aa8 META.json
+SHA1 853ab7a45acf811e2b36a9672a7220adf855589a META.yml
+SHA1 bd0f89ea7f904ff6eceec8f1e1f199719ec1f833 README
+SHA1 efe0ce2507efaeab076056b5a3c3d43524fbcd9a lib/WWW/NOS/Open.pm
+SHA1 6c9d476ab50bf0bf7026b40228b01ac34759883f lib/WWW/NOS/Open/Article.pm
+SHA1 67ce00a81c14a0f21b9bcb479198ff7480960315 lib/WWW/NOS/Open/AudioFragment.pm
+SHA1 21a1a063629767a0f1fd6a52417c3b1ddaa142cb lib/WWW/NOS/Open/Broadcast.pm
+SHA1 4fa6d64ae4faf11651e3f5883d610c68475ae122 lib/WWW/NOS/Open/DayGuide.pm
+SHA1 34e2bcfc5913ded9f59ceb9788675dfb5d3b16ad lib/WWW/NOS/Open/Document.pm
+SHA1 86fadc28773259c92b16941ecb178c80a007b2c6 lib/WWW/NOS/Open/Exceptions.pm
+SHA1 7ef976edde03fff55e2cb84019bebec32bac7b8a lib/WWW/NOS/Open/Interface.pm
+SHA1 52f2a63629ce4d41ece77de59eb5b4c589cf5e87 lib/WWW/NOS/Open/MediaResource.pm
+SHA1 3f6ef5d29aea1cef5e82aa083318e907f858e34b lib/WWW/NOS/Open/Resource.pm
+SHA1 abd437eea0aa3c1312770666cabc694c06497eb0 lib/WWW/NOS/Open/Result.pm
+SHA1 dd6190d4499ab36fa4c1854eadb7b24f61d6085a lib/WWW/NOS/Open/TypeDef.pm
+SHA1 1331f46f000d1fc488e82c26cc0ae123afd74eca lib/WWW/NOS/Open/Version.pm
+SHA1 2a168e557132d21ac389b9e1d511784736ce6093 lib/WWW/NOS/Open/Video.pm
+SHA1 c0a83493ef75c9c79252e94a63c6acfc574c9916 scripts/DummyServer.pl
+SHA1 5a3194b95f0723c900e356af294b3c644b51d4c3 scripts/TestNOSOpen.pl
+SHA1 e6d7e9e00006e118f0aa38eb7c65c50ae0f41fac t/00_base.t
+SHA1 ee853fb6f04dede0b8d4c8f8978ca4f321019e19 t/00_dependencies.t
+SHA1 41b05256e6ce4eb2c25689d9a871479cb80d04e2 t/00_signature.t
+SHA1 f676786a388718302ae37847b5f9664772eb66b0 t/01_live.t
+SHA1 b96ae6fc1dd31c783a456d510dcde640749b3d17 t/02_exceptions.t
+SHA1 4f1a8121309b9fc192b1734081a235d80ef064ab t/09_pod.t
+SHA1 1a930204d066e426b42373fb148ddf266741babe t/10_pod-coverage.t
+SHA1 b9441485e2d16eb06b48feb72b47bcccb71fae6d t/11_test-coverage.t
+SHA1 986a8495ad0233bfdd64cfd2d32cc328f8e8ad18 t/12_manifest.t
+SHA1 62aac67f5c462a8af6fa774b77f10381fcbb483b t/13_critic.t
+SHA1 2c2fa9a3a4dd275ac6aeb3fda40ff67e208dab6d t/14_kwalitee.t
+SHA1 9a6bcbf0008073a8a64f7ccceb1ec90b2c3c84c0 t/15_spell.t
+SHA1 90110e42ee7e8af1582da5f1744d8039b53fbf24 t/perlcriticrc
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+Version: GnuPG v1.4.12 (Darwin)
 
-iEUEARECAAYFAk0viAcACgkQr7H9zeGP1tWPqwCY87uybXeZNqPie2XfQwJp+UF1
-HwCfav/NMkZMwLOdQybPqss0M78gm0Y=
-=I7VB
+iEYEARECAAYFAlCWUZkACgkQ8EyqqHBOVHddWwCfckhHqDMKCziVu5EcDn4hwLRD
+/igAoODX13A2IwJIafwSa6umPKqhnVq7
+=C1Bm
 -----END PGP SIGNATURE-----

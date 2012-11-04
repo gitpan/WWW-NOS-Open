@@ -1,16 +1,9 @@
-package WWW::NOS::Open::Interface;    # -*- cperl; cperl-indent-level: 4 -*-
+package WWW::NOS::Open::Interface 0.100;  # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Interface.pm 410 2011-01-13 20:39:07Z roland $
-# $Revision: 410 $
-# $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/Interface.pm $
-# $Date: 2011-01-13 21:39:07 +0100 (Thu, 13 Jan 2011) $
-
 use utf8;
-use 5.006000;
-
-our $VERSION = '0.02';
+use 5.014000;
 
 use Moose::Role qw/requires/;
 requires 'get_version';
@@ -27,16 +20,13 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS
-
 =head1 NAME
 
-WWW::NOS::Open::Interface - Interface for L<WWW::NOS::Open|WWW::NOS::Open>
-REST API.
+WWW::NOS::Open::Interface - Interface for the Open NOS REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open::Interface version 0.02.
+This document describes WWW::NOS::Open::Interface version 0.100.
 
 =head1 SYNOPSIS
 
@@ -67,8 +57,13 @@ A role defining the interface of the L<Open NOS|http://open.nos.nl/> REST API.
 
 =head1 DEPENDENCIES
 
-L<Moose|Moose>
-L<Moose::Role|Moose::Role>
+=over 4
+
+=item * L<Moose|Moose>
+
+=item * L<Moose::Role|Moose::Role>
+
+=back
 
 =head1 INCOMPATIBILITIES
 
@@ -81,14 +76,14 @@ L<RT for rt.cpan.org|https://rt.cpan.org/Dist/Display.html?Queue=WWW-NOS-Open>.
 
 =head1 AUTHOR
 
-Roland van Ipenburg  C<< <ipenburg@xs4all.nl> >>
+Roland van Ipenburg, E<lt>ipenburg@xs4all.nlE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 by Roland van Ipenburg
+Copyright 2012 by Roland van Ipenburg
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.12.2 or,
+it under the same terms as Perl itself, either Perl version 5.14.0 or,
 at your option, any later version of Perl 5 you may have available.
 
 =head1 DISCLAIMER OF WARRANTY

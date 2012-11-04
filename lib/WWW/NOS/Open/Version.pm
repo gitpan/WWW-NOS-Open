@@ -1,19 +1,12 @@
-package WWW::NOS::Open::Version;    # -*- cperl; cperl-indent-level: 4 -*-
+package WWW::NOS::Open::Version 0.100;    # -*- cperl; cperl-indent-level: 4 -*-
 use strict;
 use warnings;
 
-# $Id: Version.pm 408 2011-01-06 20:53:25Z roland $
-# $Revision: 408 $
-# $HeadURL: svn+ssh://ipenburg.xs4all.nl/srv/svnroot/candi/trunk/WWW-NOS-Open/lib/WWW/NOS/Open/Version.pm $
-# $Date: 2011-01-06 21:53:25 +0100 (Thu, 06 Jan 2011) $
-
 use utf8;
-use 5.006000;
-
-our $VERSION = '0.02';
+use 5.014000;
 
 use Moose qw/around has/;
-use namespace::autoclean -also => qr/^__/sxm;
+use namespace::autoclean '-also' => qr/^__/sxm;
 
 use Readonly;
 Readonly::Scalar my $UNDER  => q{_};
@@ -23,20 +16,20 @@ my @strings = qw(version build);
 while ( my $string = shift @strings ) {
     has $UNDER
       . $string => (
-        is       => 'ro',
-        isa      => 'Str',
-        reader   => $GETTER . $UNDER . $string,
-        init_arg => $string,
+        'is'       => 'ro',
+        'isa'      => 'Str',
+        'reader'   => $GETTER . $UNDER . $string,
+        'init_arg' => $string,
       );
 }
 
-around BUILDARGS => sub {
+around 'BUILDARGS' => sub {
     my $orig  = shift;
     my $class = shift;
     my ( $version, $build ) = @_;
     return $class->$orig(
-        version => $version,
-        build   => $build,
+        'version' => $version,
+        'build'   => $build,
     );
 };
 
@@ -52,16 +45,13 @@ __END__
 
 =encoding utf8
 
-=for stopwords Roland van Ipenburg API NOS
-
 =head1 NAME
 
-WWW::NOS::Open::Version - represents a version of the
-L<Open NOS|http://open.nos.nl/> REST API.
+WWW::NOS::Open::Version - version of the Open NOS REST API.
 
 =head1 VERSION
 
-This document describes WWW::NOS::Open version 0.02.
+This document describes WWW::NOS::Open version 0.100.
 
 =head1 SYNOPSIS
 
@@ -93,8 +83,13 @@ Returns the build number as string.
 
 =head1 DEPENDENCIES
 
-L<Moose|Moose>
-L<namespace::autoclean|namespace::autoclean>
+=over 4
+
+=item * L<Moose|Moose>
+
+=item * L<namespace::autoclean|namespace::autoclean>
+
+=back
 
 =head1 INCOMPATIBILITIES
 
@@ -107,14 +102,14 @@ L<RT for rt.cpan.org|https://rt.cpan.org/Dist/Display.html?Queue=WWW-NOS-Open>.
 
 =head1 AUTHOR
 
-Roland van Ipenburg  C<< <ipenburg@xs4all.nl> >>
+Roland van Ipenburg, E<lt>ipenburg@xs4all.nlE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 by Roland van Ipenburg
+Copyright 2012 by Roland van Ipenburg
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.12.2 or,
+it under the same terms as Perl itself, either Perl version 5.14.0 or,
 at your option, any later version of Perl 5 you may have available.
 
 =head1 DISCLAIMER OF WARRANTY
